@@ -8,6 +8,8 @@
 function loadWymSrc(srcPath, extraRequirements, jqueryVersion) {
 
     var requirements = [
+			'https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js',
+			'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js',
             srcPath + 'wymeditor/rangy/rangy-core.js',
             srcPath + 'wymeditor/rangy/rangy-selectionsaverestore.js',
             srcPath + 'wymeditor/core.js',
@@ -31,7 +33,7 @@ function loadWymSrc(srcPath, extraRequirements, jqueryVersion) {
         i,
         allRequirements;
 
-    if (typeof jqueryVersion  === 'undefined') {
+    /*if (typeof jqueryVersion  === 'undefined') {
         newJquery = [srcPath + 'jquery/jquery.js'];
         requirements = newJquery.concat(requirements);
     } else {
@@ -39,7 +41,7 @@ function loadWymSrc(srcPath, extraRequirements, jqueryVersion) {
             'https://ajax.googleapis.com/ajax/libs/jquery/' + jqueryVersion + '/jquery.min.js'
         ];
         requirements = newJquery.concat(requirements);
-    }
+    }*/
 
     allRequirements = requirements.concat(extraRequirements);
     for (i = 0; i < allRequirements.length; i++) {

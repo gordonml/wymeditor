@@ -542,156 +542,101 @@ jQuery.fn.wymeditor = function (options) {
         dialogTableSelector:   ".wym_dialog_table",
         dialogPasteSelector:   ".wym_dialog_paste",
         dialogPreviewSelector: ".wym_dialog_preview",
+		
+		dialogSelector:		".wym_dialog_container",
+		dialogOptions:		{ height: 480, width: 640, modal: true },
 
-        updateSelector:    ".wymupdate",
-        updateEvent:       "click",
-
-        dialogFeatures:    "menubar=no,titlebar=no,toolbar=no,resizable=no" +
-            ",width=560,height=300,top=0,left=0",
-        dialogFeaturesPreview: "menubar=no,titlebar=no,toolbar=no,resizable=no" +
-            ",scrollbars=yes,width=560,height=300,top=0,left=0",
-
-        dialogHtml: String() +
-            '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" ' +
-                    '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">' +
-            '<html dir="' + WYMeditor.DIRECTION + '">' +
-                '<head>' +
-                    '<link rel="stylesheet" type="text/css" media="screen" ' +
-                        'href="' + WYMeditor.CSS_PATH + '" />' +
-                    '<title>' + WYMeditor.DIALOG_TITLE + '</title>' +
-                    '<script type="text/javascript" ' +
-                        'src="' + WYMeditor.JQUERY_PATH + '"></script>' +
-                    '<script type="text/javascript" ' +
-                        'src="' + WYMeditor.WYM_PATH + '"></script>' +
-                '</head>' +
-                WYMeditor.DIALOG_BODY +
-            '</html>',
+        updateSelector:     ".wymupdate",
+        updateEvent:        "click",
 
         dialogLinkHtml: String() +
-            '<body class="wym_dialog wym_dialog_link" ' +
-                    ' onload="WYMeditor.INIT_DIALOG(' + WYMeditor.INDEX + ')">' +
-                '<form>' +
-                    '<fieldset>' +
-                        '<input type="hidden" class="wym_dialog_type" ' +
-                            'value="' + WYMeditor.DIALOG_LINK + '" />' +
-                        '<legend>{Link}</legend>' +
-                        '<div class="row">' +
-                            '<label>{URL}</label>' +
-                            '<input type="text" class="wym_href" value="" ' +
-                                'size="40" autofocus="autofocus" />' +
-                        '</div>' +
-                        '<div class="row">' +
-                            '<label>{Title}</label>' +
-                            '<input type="text" class="wym_title" value="" ' +
-                                'size="40" />' +
-                        '</div>' +
-                        '<div class="row">' +
-                            '<label>{Relationship}</label>' +
-                            '<input type="text" class="wym_rel" value="" ' +
-                                'size="40" />' +
-                        '</div>' +
-                        '<div class="row row-indent">' +
-                            '<input class="wym_submit" type="submit" ' +
-                                'value="{Submit}" />' +
-                            '<input class="wym_cancel" type="button" ' +
-                                'value="{Cancel}" />' +
-                        '</div>' +
-                    '</fieldset>' +
-                '</form>' +
-            '</body>',
+            '<div class="wym_dialog wym_dialog_link">' +
+				'<fieldset>' +
+					'<input type="hidden" class="wym_dialog_type" ' +
+						'value="' + WYMeditor.DIALOG_LINK + '" />' +
+					'<legend>{Link}</legend>' +
+					'<div class="row">' +
+						'<label>{URL}</label>' +
+						'<input type="text" class="wym_href" value="" ' +
+							'size="40" autofocus="autofocus" />' +
+					'</div>' +
+					'<div class="row">' +
+						'<label>{Title}</label>' +
+						'<input type="text" class="wym_title" value="" ' +
+							'size="40" />' +
+					'</div>' +
+					'<div class="row">' +
+						'<label>{Relationship}</label>' +
+						'<input type="text" class="wym_rel" value="" ' +
+							'size="40" />' +
+					'</div>' +
+				'</fieldset>' +
+            '</div>',
 
         dialogImageHtml: String() +
-            '<body class="wym_dialog wym_dialog_image" ' +
-                    'onload="WYMeditor.INIT_DIALOG(' + WYMeditor.INDEX + ')">' +
-                '<form>' +
-                    '<fieldset>' +
-                        '<input type="hidden" class="wym_dialog_type" ' +
-                            'value="' + WYMeditor.DIALOG_IMAGE + '" />' +
-                        '<legend>{Image}</legend>' +
-                        '<div class="row">' +
-                            '<label>{URL}</label>' +
-                            '<input type="text" class="wym_src" value="" ' +
-                                'size="40" autofocus="autofocus" />' +
-                        '</div>' +
-                        '<div class="row">' +
-                            '<label>{Alternative_Text}</label>' +
-                            '<input type="text" class="wym_alt" value="" size="40" />' +
-                        '</div>' +
-                        '<div class="row">' +
-                            '<label>{Title}</label>' +
-                            '<input type="text" class="wym_title" value="" size="40" />' +
-                        '</div>' +
-                        '<div class="row row-indent">' +
-                            '<input class="wym_submit" type="submit" ' +
-                                'value="{Submit}" />' +
-                            '<input class="wym_cancel" type="button" ' +
-                                'value="{Cancel}" />' +
-                        '</div>' +
-                    '</fieldset>' +
-                '</form>' +
-            '</body>',
+            '<div class="wym_dialog wym_dialog_image">' +
+				'<fieldset>' +
+					'<input type="hidden" class="wym_dialog_type" ' +
+						'value="' + WYMeditor.DIALOG_IMAGE + '" />' +
+					'<legend>{Image}</legend>' +
+					'<div class="row">' +
+						'<label>{URL}</label>' +
+						'<input type="text" class="wym_src" value="" ' +
+							'size="40" autofocus="autofocus" />' +
+					'</div>' +
+					'<div class="row">' +
+						'<label>{Alternative_Text}</label>' +
+						'<input type="text" class="wym_alt" value="" size="40" />' +
+					'</div>' +
+					'<div class="row">' +
+						'<label>{Title}</label>' +
+						'<input type="text" class="wym_title" value="" size="40" />' +
+					'</div>' +
+				'</fieldset>' +
+            '</div>',
 
         dialogTableHtml: String() +
-            '<body class="wym_dialog wym_dialog_table" ' +
-                    'onload="WYMeditor.INIT_DIALOG(' + WYMeditor.INDEX + ')">' +
-                '<form>' +
-                    '<fieldset>' +
-                        '<input type="hidden" class="wym_dialog_type" ' +
-                            'value="' + WYMeditor.DIALOG_TABLE + '" />' +
-                        '<legend>{Table}</legend>' +
-                        '<div class="row">' +
-                            '<label>{Caption}</label>' +
-                            '<input type="text" class="wym_caption" value="" ' +
-                                'size="40" />' +
-                        '</div>' +
-                        '<div class="row">' +
-                            '<label>{Summary}</label>' +
-                            '<input type="text" class="wym_summary" value="" ' +
-                                'size="40" />' +
-                        '</div>' +
-                        '<div class="row">' +
-                            '<label>{Number_Of_Rows}</label>' +
-                            '<input type="text" class="wym_rows" value="3" size="3" />' +
-                        '</div>' +
-                        '<div class="row">' +
-                            '<label>{Number_Of_Cols}</label>' +
-                            '<input type="text" class="wym_cols" value="2" size="3" />' +
-                        '</div>' +
-                        '<div class="row row-indent">' +
-                            '<input class="wym_submit" type="submit" ' +
-                                'value="{Submit}" />' +
-                            '<input class="wym_cancel" type="button" ' +
-                                'value="{Cancel}" />' +
-                        '</div>' +
-                    '</fieldset>' +
-                '</form>' +
-            '</body>',
+            '<div class="wym_dialog wym_dialog_table">' +
+				'<fieldset>' +
+					'<input type="hidden" class="wym_dialog_type" ' +
+						'value="' + WYMeditor.DIALOG_TABLE + '" />' +
+					'<legend>{Table}</legend>' +
+					'<div class="row">' +
+						'<label>{Caption}</label>' +
+						'<input type="text" class="wym_caption" value="" ' +
+							'size="40" />' +
+					'</div>' +
+					'<div class="row">' +
+						'<label>{Summary}</label>' +
+						'<input type="text" class="wym_summary" value="" ' +
+							'size="40" />' +
+					'</div>' +
+					'<div class="row">' +
+						'<label>{Number_Of_Rows}</label>' +
+						'<input type="text" class="wym_rows" value="3" size="3" />' +
+					'</div>' +
+					'<div class="row">' +
+						'<label>{Number_Of_Cols}</label>' +
+						'<input type="text" class="wym_cols" value="2" size="3" />' +
+					'</div>' +
+				'</fieldset>' +
+            '</div>',
 
         dialogPasteHtml: String() +
-            '<body class="wym_dialog wym_dialog_paste" ' +
-                    'onload="WYMeditor.INIT_DIALOG(' + WYMeditor.INDEX + ')">' +
-                '<form>' +
-                    '<input type="hidden" class="wym_dialog_type" ' +
-                        'value="' + WYMeditor.DIALOG_PASTE + '" />' +
-                    '<fieldset>' +
-                        '<legend>{Paste_From_Word}</legend>' +
-                        '<div class="row">' +
-                            '<textarea class="wym_text" rows="10" cols="50" ' +
-                                'autofocus="autofocus"></textarea>' +
-                        '</div>' +
-                        '<div class="row">' +
-                            '<input class="wym_submit" type="submit" ' +
-                                'value="{Submit}" />' +
-                            '<input class="wym_cancel" type="button" ' +
-                                'value="{Cancel}" />' +
-                        '</div>' +
-                    '</fieldset>' +
-                '</form>' +
+            '<div class="wym_dialog wym_dialog_paste">' +
+				'<input type="hidden" class="wym_dialog_type" ' +
+					'value="' + WYMeditor.DIALOG_PASTE + '" />' +
+				'<fieldset>' +
+					'<legend>{Paste_From_Word}</legend>' +
+					'<div class="row">' +
+						'<textarea class="wym_text" rows="10" cols="50" ' +
+							'autofocus="autofocus"></textarea>' +
+					'</div>' +
+				'</fieldset>' +
             '</body>',
 
         dialogPreviewHtml: String() +
-            '<body class="wym_dialog wym_dialog_preview" ' +
-                'onload="WYMeditor.INIT_DIALOG(' + WYMeditor.INDEX + ')"></body>',
+            '<div class="wym_dialog wym_dialog_preview"></div>',
 
         dialogStyles: [],
 
@@ -815,141 +760,6 @@ WYMeditor.computeJqueryPath = function () {
             }
         )
     ).attr('src');
-};
-
-/********** DIALOGS **********/
-
-WYMeditor.INIT_DIALOG = function (index) {
-
-    var wym = window.opener.WYMeditor.INSTANCES[index],
-        doc = window.document,
-        selected = wym.selected(),
-        dialogType = jQuery(wym._options.dialogTypeSelector).val(),
-        sStamp = wym.uniqueStamp(),
-        styles,
-        aCss,
-        tableOnClick;
-
-    if (dialogType === WYMeditor.DIALOG_LINK) {
-        // ensure that we select the link to populate the fields
-        if (selected && selected.tagName &&
-                selected.tagName.toLowerCase !== WYMeditor.A) {
-            selected = jQuery(selected).parentsOrSelf(WYMeditor.A);
-        }
-
-        // fix MSIE selection if link image has been clicked
-        if (!selected && wym._selected_image) {
-            selected = jQuery(wym._selected_image).parentsOrSelf(WYMeditor.A);
-        }
-    }
-
-    // pre-init functions
-    if (jQuery.isFunction(wym._options.preInitDialog)) {
-        wym._options.preInitDialog(wym, window);
-    }
-
-    // add css rules from options
-    styles = doc.styleSheets[0];
-    aCss = eval(wym._options.dialogStyles);
-
-    wym.addCssRules(doc, aCss);
-
-    // auto populate fields if selected container (e.g. A)
-    if (selected) {
-        jQuery(wym._options.hrefSelector).val(jQuery(selected).attr(WYMeditor.HREF));
-        jQuery(wym._options.srcSelector).val(jQuery(selected).attr(WYMeditor.SRC));
-        jQuery(wym._options.titleSelector).val(jQuery(selected).attr(WYMeditor.TITLE));
-        jQuery(wym._options.relSelector).val(jQuery(selected).attr(WYMeditor.REL));
-        jQuery(wym._options.altSelector).val(jQuery(selected).attr(WYMeditor.ALT));
-    }
-
-    // auto populate image fields if selected image
-    if (wym._selected_image) {
-        jQuery(wym._options.dialogImageSelector + " " + wym._options.srcSelector).val(jQuery(wym._selected_image).attr(WYMeditor.SRC));
-        jQuery(wym._options.dialogImageSelector + " " + wym._options.titleSelector).val(jQuery(wym._selected_image).attr(WYMeditor.TITLE));
-        jQuery(wym._options.dialogImageSelector + " " + wym._options.altSelector).val(jQuery(wym._selected_image).attr(WYMeditor.ALT));
-    }
-
-    jQuery(wym._options.dialogLinkSelector + " " +
-            wym._options.submitSelector).submit(function () {
-
-        var sUrl = jQuery(wym._options.hrefSelector).val(),
-            link;
-        if (sUrl.length > 0) {
-
-            if (selected[0] && selected[0].tagName.toLowerCase() === WYMeditor.A) {
-                link = selected;
-            } else {
-                wym._exec(WYMeditor.CREATE_LINK, sStamp);
-                link = jQuery("a[href=" + sStamp + "]", wym._doc.body);
-            }
-
-            link.attr(WYMeditor.HREF, sUrl);
-            link.attr(WYMeditor.TITLE, jQuery(wym._options.titleSelector).val());
-            link.attr(WYMeditor.REL, jQuery(wym._options.relSelector).val());
-        }
-        window.close();
-    });
-
-    jQuery(wym._options.dialogImageSelector + " " +
-            wym._options.submitSelector).submit(function () {
-
-        var sUrl = jQuery(wym._options.srcSelector).val(),
-            $img;
-        if (sUrl.length > 0) {
-
-            wym._exec(WYMeditor.INSERT_IMAGE, sStamp);
-
-            $img = jQuery("img[src$=" + sStamp + "]", wym._doc.body);
-            $img.attr(WYMeditor.SRC, sUrl);
-            $img.attr(WYMeditor.TITLE, jQuery(wym._options.titleSelector).val());
-            $img.attr(WYMeditor.ALT, jQuery(wym._options.altSelector).val());
-        }
-        window.close();
-    });
-
-    tableOnClick = WYMeditor.MAKE_TABLE_ONCLICK(wym);
-    jQuery(wym._options.dialogTableSelector + " " + wym._options.submitSelector)
-        .submit(tableOnClick);
-
-    jQuery(wym._options.dialogPasteSelector + " " +
-            wym._options.submitSelector).submit(function () {
-
-        var sText = jQuery(wym._options.textSelector).val();
-        wym.paste(sText);
-        window.close();
-    });
-
-    jQuery(wym._options.dialogPreviewSelector + " " +
-        wym._options.previewSelector).html(wym.xhtml());
-
-    //cancel button
-    jQuery(wym._options.cancelSelector).mousedown(function () {
-        window.close();
-    });
-
-    //pre-init functions
-    if (jQuery.isFunction(wym._options.postInitDialog)) {
-        wym._options.postInitDialog(wym, window);
-    }
-
-};
-
-/********** TABLE DIALOG ONCLICK **********/
-
-WYMeditor.MAKE_TABLE_ONCLICK = function (wym) {
-    var tableOnClick = function () {
-        var numRows = jQuery(wym._options.rowsSelector).val(),
-            numColumns = jQuery(wym._options.colsSelector).val(),
-            caption = jQuery(wym._options.captionSelector).val(),
-            summary = jQuery(wym._options.summarySelector).val(),
-
-            table = wym.insertTable(numRows, numColumns, caption, summary);
-
-        window.close();
-    };
-
-    return tableOnClick;
 };
 
 

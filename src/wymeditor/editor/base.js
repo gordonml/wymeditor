@@ -328,7 +328,7 @@ WYMeditor.editor.prototype.exec = function (cmd) {
         break;
 
     case WYMeditor.PREVIEW:
-        this.dialog(WYMeditor.PREVIEW, this._options.dialogFeaturesPreview);
+        this.dialog(WYMeditor.PREVIEW);
         break;
 
     case WYMeditor.INSERT_ORDEREDLIST:
@@ -842,95 +842,218 @@ WYMeditor.editor.prototype.fixDoubleBr = function () {
     }
 };
 
+WYMeditor.editor.prototype.createDelegate = function (instance, method, context)
+{
+	return function ()
+	{
+		return method.call(instance, this, context);
+	};
+}
+
 /**
     editor.dialog
     =============
 
     Open a dialog box
 */
-WYMeditor.editor.prototype.dialog = function (dialogType, dialogFeatures, bodyHtml) {
-    var features = dialogFeatures || this._wym._options.dialogFeatures,
-        wDialog = window.open('', 'dialog', features),
-        sBodyHtml,
-        h = WYMeditor.Helper,
-        dialogHtml,
-        doc;
+WYMeditor.editor.prototype.dialog = function (dialogType) {
+	var okButton;
+	var cancelButton = {text: 'Cancel', click: function(){ $(this).dialog('close'); }};
 
-    if (wDialog) {
-        sBodyHtml = "";
+	switch (dialogType) {
 
-        switch (dialogType) {
+	case (WYMeditor.DIALOG_LINK):
+		okButton = {text: 'Ok', click: this.createDelegate(this, this.doAddLink)};
+		dlg = this.createDialog('Add link', this.replaceStrings(this._options.dialogLinkHtml), [cancelButton, okButton]);
+		this.initDialog(dlg, dialogType);
+		break;
+	case (WYMeditor.DIALOG_IMAGE):
+		okButton = {text: 'Ok', click: this.createDelegate(this, this.doAddImage)};
+		dlg = this.createDialog('Add image', this.replaceStrings(this._options.dialogImageHtml), [cancelButton, okButton]);
+		this.initDialog(dlg, dialogType);
+		break;
+	case (WYMeditor.DIALOG_TABLE):
+		okButton = {text: 'Ok', click: this.createDelegate(this, this.doAddTable)};
+		dlg = this.createDialog('Add table', this.replaceStrings(this._options.dialogTableHtml), [cancelButton, okButton]);
+		break;
+	case (WYMeditor.DIALOG_PASTE):
+		okButton = {text: 'Ok', click: this.createDelegate(this, this.doPasteDlg)};
+		dlg = this.createDialog('Paste from word', this.replaceStrings(this._options.dialogPasteHtml), [cancelButton, okButton]);
+		break;
+	case (WYMeditor.PREVIEW):
+		sBodyHtml = this._options.dialogPreviewHtml;
+		dlg = this.createDialog('preview', this.replaceStrings(this._options.dialogPreviewHtml), [cancelButton]);
+		dlg.find(this._options.dialogPreviewSelector).html(this.xhtml());
+		break;
+	}
+};
 
-        case (WYMeditor.DIALOG_LINK):
-            sBodyHtml = this._options.dialogLinkHtml;
-            break;
-        case (WYMeditor.DIALOG_IMAGE):
-            sBodyHtml = this._options.dialogImageHtml;
-            break;
-        case (WYMeditor.DIALOG_TABLE):
-            sBodyHtml = this._options.dialogTableHtml;
-            break;
-        case (WYMeditor.DIALOG_PASTE):
-            sBodyHtml = this._options.dialogPasteHtml;
-            break;
-        case (WYMeditor.PREVIEW):
-            sBodyHtml = this._options.dialogPreviewHtml;
-            break;
-        default:
-            sBodyHtml = bodyHtml;
-            break;
+
+/**
+    editor.createDialog
+    ===================
+
+    Creates a dialog box
+*/
+WYMeditor.editor.prototype.createDialog = function (title, content, buttons) {
+	var dlg = jQuery('<div>');
+	
+	if (typeof(content) === 'string') {
+		dlg.html(content);
+	} else {
+		dlg.append(content);
+		jQuery('body').append(dlg);
+	}
+	
+	var options = jQuery.extend({}, this._options.dialogOptions, 
+		{
+			'title': title, 
+			'buttons': buttons,
+			'close': function(){ $(this).remove(); }
+		});
+		
+	dlg.dialog(options);
+	return dlg;
+}
+
+/**
+    editor.doAddLink
+    ===================
+
+    Called when a user clicks 'ok' on the add link dialog.
+*/
+WYMeditor.editor.prototype.doAddLink = function (){
+	dlg = $(dlg);
+	var sUrl = dlg.find(this._options.hrefSelector).val();
+	var selected = this.selected();
+	var sStamp = this.uniqueStamp();
+	var link;
+	
+	// ensure that we select the link to populate the fields
+	if (selected && selected.tagName &&
+			selected.tagName.toLowerCase !== WYMeditor.A) {
+		selected = jQuery(selected).parentsOrSelf(WYMeditor.A);
+	}
+
+	// fix MSIE selection if link image has been clicked
+	if (!selected && wym._selected_image) {
+		selected = jQuery(wym._selected_image).parentsOrSelf(WYMeditor.A);
+	}
+		
+	if (sUrl.length > 0) {
+		if (selected[0] && selected[0].tagName.toLowerCase() === WYMeditor.A) {
+			link = selected;
+		} else {
+			this._exec(WYMeditor.CREATE_LINK, sStamp);
+			link = $(this._doc.body).find("a[href=" + sStamp + "]");
+		}
+
+		link.attr(WYMeditor.HREF, sUrl);
+		link.attr(WYMeditor.TITLE, dlg.find(this._options.titleSelector).val());
+		link.attr(WYMeditor.REL, dlg.find(this._options.relSelector).val());
+	}
+	
+	dlg.dialog('close');
+};
+
+/**
+    editor.doAddImage
+    ===================
+
+    Called when a user clicks 'ok' on the add image dialog.
+*/
+WYMeditor.editor.prototype.doAddImage = function (dlg){
+	dlg = $(dlg);
+	var sUrl = dlg.find(this._options.srcSelector).val();
+	var selected = this.selected();
+	var sStamp = this.uniqueStamp();
+	var timg;
+	
+	if (sUrl.length > 0) {
+		this._exec(WYMeditor.INSERT_IMAGE, sStamp);
+
+		timg = $(this._doc.body).find("img[src$=" + sStamp + "]");
+		timg.attr(WYMeditor.SRC, sUrl);
+		timg.attr(WYMeditor.TITLE, dlg.find(this._options.titleSelector).val());
+		timg.attr(WYMeditor.ALT, dlg.find(this._options.altSelector).val());
+	}
+	
+	dlg.dialog('close');
+};
+
+
+/**
+    editor.doAddTable
+    ===================
+
+    Called when a user clicks 'ok' on the add table dialog.
+*/
+WYMeditor.editor.prototype.doAddTable = function (dlg){
+	dlg = $(dlg);
+	var numRows = dlg.find(this._options.rowsSelector).val();
+	var numColumns = dlg.find(this._options.colsSelector).val();
+	var caption = dlg.find(this._options.captionSelector).val();
+	var summary = dlg.find(this._options.summarySelector).val();
+
+	this.insertTable(numRows, numColumns, caption, summary);
+	dlg.dialog('close');
+};
+
+
+/**
+    editor.doPasteDlg
+    ===================
+
+    Called when a user clicks 'ok' on the paste dialog.
+*/
+WYMeditor.editor.prototype.doPasteDlg = function (dlg){
+	dlg = $(dlg);
+	var sText = jQuery(this._options.textSelector).val();
+    this.paste(sText);
+	dlg.dialog('close');
+};
+
+
+/**
+    editor.initDialog
+    ===================
+
+    Initialises the built-in dialogs.
+*/
+WYMeditor.editor.prototype.initDialog = function (dlg, dialogType) {
+    var selected = this.selected();
+    var sStamp = this.uniqueStamp();
+		
+    if (dialogType === WYMeditor.DIALOG_LINK) {
+        // ensure that we select the link to populate the fields
+        if (selected && selected.tagName &&
+                selected.tagName.toLowerCase !== WYMeditor.A) {
+            selected = jQuery(selected).parentsOrSelf(WYMeditor.A);
         }
 
-        // Construct the dialog
-        dialogHtml = this._options.dialogHtml;
-        dialogHtml = h.replaceAll(
-            dialogHtml,
-            WYMeditor.BASE_PATH,
-            this._options.basePath
-        );
-        dialogHtml = h.replaceAll(
-            dialogHtml,
-            WYMeditor.DIRECTION,
-            this._options.direction
-        );
-        dialogHtml = h.replaceAll(
-            dialogHtml,
-            WYMeditor.CSS_PATH,
-            this._options.skinPath + WYMeditor.SKINS_DEFAULT_CSS
-        );
-        dialogHtml = h.replaceAll(
-            dialogHtml,
-            WYMeditor.WYM_PATH,
-            this._options.wymPath
-        );
-        dialogHtml = h.replaceAll(
-            dialogHtml,
-            WYMeditor.JQUERY_PATH,
-            this._options.jQueryPath
-        );
-        dialogHtml = h.replaceAll(
-            dialogHtml,
-            WYMeditor.DIALOG_TITLE,
-            this.encloseString(dialogType)
-        );
-        dialogHtml = h.replaceAll(
-            dialogHtml,
-            WYMeditor.DIALOG_BODY,
-            sBodyHtml
-        );
-        dialogHtml = h.replaceAll(
-            dialogHtml,
-            WYMeditor.INDEX,
-            this._index
-        );
+        // fix MSIE selection if link image has been clicked
+        if (!selected && this._selected_image) {
+            selected = jQuery(this._selected_image).parentsOrSelf(WYMeditor.A);
+        }
+    }
 
-        dialogHtml = this.replaceStrings(dialogHtml);
+    // auto populate fields if selected container (e.g. A)
+    if (selected) {
+        dlg.find(this._options.hrefSelector).val(jQuery(selected).attr(WYMeditor.HREF));
+        dlg.find(this._options.srcSelector).val(jQuery(selected).attr(WYMeditor.SRC));
+        dlg.find(this._options.titleSelector).val(jQuery(selected).attr(WYMeditor.TITLE));
+        dlg.find(this._options.relSelector).val(jQuery(selected).attr(WYMeditor.REL));
+        dlg.find(this._options.altSelector).val(jQuery(selected).attr(WYMeditor.ALT));
+    }
 
-        doc = wDialog.document;
-        doc.write(dialogHtml);
-        doc.close();
+    // auto populate image fields if selected image
+    if (this._selected_image) {
+        dlg.find(this._options.srcSelector).val(jQuery(this._selected_image).attr(WYMeditor.SRC));
+        dlg.find(this._options.titleSelector).val(jQuery(this._selected_image).attr(WYMeditor.TITLE));
+        dlg.find(this._options.altSelector).val(jQuery(this._selected_image).attr(WYMeditor.ALT));
     }
 };
+
 
 /**
     editor.toggleHtml
